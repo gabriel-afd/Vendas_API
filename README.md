@@ -73,7 +73,7 @@ com.gabriel.vendas/
 
 
 <div align="center">
-  <img src="imagens/DER.png" width="500"/>
+  <img src="imagens/DER.png" height="400"/>
 </div>
 
 
