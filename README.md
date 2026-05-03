@@ -72,7 +72,9 @@ com.gabriel.vendas/
 ## Diagrama de entidades
 
 
-![Diagrama de Entidades](imagens/DER.png)
+<div align="center">
+  <img src="imagens/DER.png" width="500"/>
+</div>
 
 
 - Um **vendedor** pode ter várias **vendas**
@@ -107,7 +109,9 @@ VendaMapper.toResponse()
 
 ```
 
-![Fluxo de criação de venda](imagens/Fluxo_POST_venda.png)
+<div align="center">
+  <img src="imagens/Fluxo_POST_venda.png" width="1000"/>
+</div>
 ---
 
 ## Fluxo de listagem de vendedores
@@ -142,7 +146,9 @@ Para cada Vendedor:
 
 ```
 
-![Fluxo de criação de venda](imagens/Fluxo_GET_vendedores.png)
+<div align="center">
+  <img src="imagens/Fluxo_GET_vendedores.png" width="1000"/>
+</div>
 ---
 
 ## Design patterns utilizados
