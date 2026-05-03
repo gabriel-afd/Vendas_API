@@ -47,6 +47,7 @@ A média é calculada de forma inteligente conforme o intervalo informado: diár
 | JUnit 5 | Framework de testes unitários |
 | Mockito | Mocking de dependências nos testes |
 | Maven | Gerenciamento de dependências e build |
+| Docker | Conteinerização da aplicação |
 
 ---
 
@@ -226,7 +227,7 @@ Exemplo de response de erro:
 
 ## Como rodar o projeto
 
-**Pré-requisitos:** Java 21+ e Maven instalados.
+**Opção 1 Pré-requisitos:** Java 21+ e Maven instalados.
 
 ```bash
 # Clonar o repositório
@@ -252,6 +253,24 @@ Para rodar os testes:
 ```bash
 mvn test
 ```
+
+**Opção 2 — via Docker Compose**
+
+Na pasta raiz do projeto abra o CMD e execute:
+Certifique-se de estar com o Docker Desktop em uso
+
+JDBC URL: jdbc:h2:mem:vendasdb
+User Name: vendas_admin
+
+```bash
+# Build e start
+docker-compose up --build
+
+# Parar
+docker-compose down
+```
+
+A API estará disponível em `http://localhost:8080`.
 
 ---
 

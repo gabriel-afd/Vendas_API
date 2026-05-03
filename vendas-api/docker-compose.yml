@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  vendas-api:
+    build: .
+    container_name: vendas-api
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:h2:mem:vendasdb
+      - SPRING_DATASOURCE_USERNAME=vendas_admin
+      - SPRING_DATASOURCE_PASSWORD=
+      - SPRING_H2_CONSOLE_ENABLED=true
+      - SPRING_H2_CONSOLE_SETTINGS_WEB-ALLOW-OTHERS=true
+    restart: on-failure
