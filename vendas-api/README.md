@@ -71,9 +71,9 @@ com.gabriel.vendas/
 
 ## Diagrama de entidades
 
-```
+
 ![Diagrama de Entidades](imagens/DER.png)
-```
+
 
 - Um **vendedor** pode ter várias **vendas**
 - Toda **venda** pertence obrigatoriamente a um **vendedor**
@@ -105,10 +105,9 @@ VendaMapper.toResponse()
 { "id": 1, "dataVenda": "2026-05-01", "valor": 1500.00,
   "vendedorId": 1, "nomeVendedor": "Carlos Silva" }
 
-
-![Fluxo de criação de venda](imagens/Fluxo POST venda.png)
 ```
 
+![Fluxo de criação de venda](imagens/Fluxo_POST_venda.png)
 ---
 
 ## Fluxo de listagem de vendedores
@@ -141,9 +140,9 @@ Para cada Vendedor:
   "tipoPeriodo": "DIARIA"
 }]
 
-![Fluxo de criação de venda](imagens/Fluxo GET vendedores.png)
 ```
 
+![Fluxo de criação de venda](imagens/Fluxo_GET_vendedores.png)
 ---
 
 ## Design patterns utilizados
@@ -276,104 +275,164 @@ http://localhost:8080/v3/api-docs
  
 > Você pode testar todos os exemplos abaixo diretamente pelo Scalar em `http://localhost:8080/docs`.
  
-### Vendedores
+### 1. Criar vendedores
  
-**Criar vendedor**
-```
+```json
 POST /vendedores
-Content-Type: application/json
- 
 { "nome": "Carlos Silva" }
-```
-```json
-201 Created
-{ "id": 1, "nome": "Carlos Silva", "totalVendas": 0, "mediaPeriodo": 0, "tipoPeriodo": null }
-```
  
-**Listar vendedores com média diária** (período ≤ 31 dias)
-```
-GET /vendedores?inicio=2026-01-01&fim=2026-01-31
-```
-```json
-200 OK
-[{
-  "id": 1,
-  "nome": "Carlos Silva",
-  "totalVendas": 3,
-  "mediaPeriodo": 150.00,
-  "tipoPeriodo": "DIARIA"
-}]
-```
- 
-**Listar vendedores com média semanal** (período entre 32 e 90 dias)
-```
-GET /vendedores?inicio=2026-01-01&fim=2026-03-31
-```
-```json
-200 OK
-[{
-  "id": 1,
-  "nome": "Carlos Silva",
-  "totalVendas": 3,
-  "mediaPeriodo": 375.00,
-  "tipoPeriodo": "SEMANAL"
-}]
-```
- 
-**Listar vendedores com média mensal** (período > 90 dias)
-```
-GET /vendedores?inicio=2026-01-01&fim=2026-12-31
-```
-```json
-200 OK
-[{
-  "id": 1,
-  "nome": "Carlos Silva",
-  "totalVendas": 3,
-  "mediaPeriodo": 125.00,
-  "tipoPeriodo": "MENSAL"
-}]
+POST /vendedores
+{ "nome": "Ana Souza" }
 ```
  
 ---
  
-### Vendas
+### 2. Criar vendas para Carlos (id: 1)
  
-**Criar venda**
-```
-POST /vendas
-Content-Type: application/json
- 
-{
-  "dataVenda": "2026-01-15",
-  "valor": 1500.00,
-  "vendedorId": 1
-}
-```
 ```json
-201 Created
-{
-  "id": 1,
-  "dataVenda": "2026-01-15",
-  "valor": 1500.00,
-  "vendedorId": 1,
-  "nomeVendedor": "Carlos Silva"
-}
+POST /vendas
+{ "dataVenda": "2026-05-01", "valor": 1000.00, "vendedorId": 1 }
+ 
+POST /vendas
+{ "dataVenda": "2026-05-01", "valor": 500.00, "vendedorId": 1 }
+ 
+POST /vendas
+{ "dataVenda": "2026-05-03", "valor": 800.00, "vendedorId": 1 }
 ```
  
-**Listar vendas**
+### 3. Criar vendas para Ana (id: 2)
+ 
+```json
+POST /vendas
+{ "dataVenda": "2026-05-01", "valor": 2000.00, "vendedorId": 2 }
+ 
+POST /vendas
+{ "dataVenda": "2026-05-02", "valor": 600.00, "vendedorId": 2 }
+```
+ 
+---
+ 
+### 4. Listar vendedores — média diária (período ≤ 31 dias)
+ 
+```
+GET /vendedores?inicio=2026-05-01&fim=2026-05-31
+```
+ 
+Cálculo esperado:
+- **Carlos** — 3 vendas
+  - dia 01: (1000 + 500) / 2 = **750.00**
+  - dia 03: 800 / 1 = **800.00**
+  - média diária = (750 + 800) / 2 = **775.00**
+- **Ana** — 2 vendas
+  - dia 01: 2000 / 1 = **2000.00**
+  - dia 02: 600 / 1 = **600.00**
+  - média diária = (2000 + 600) / 2 = **1300.00**
+```json
+200 OK
+[
+  {
+    "id": 1,
+    "nome": "Carlos Silva",
+    "totalVendas": 3,
+    "mediaPeriodo": 775.00,
+    "tipoPeriodo": "DIARIA"
+  },
+  {
+    "id": 2,
+    "nome": "Ana Souza",
+    "totalVendas": 2,
+    "mediaPeriodo": 1300.00,
+    "tipoPeriodo": "DIARIA"
+  }
+]
+```
+ 
+---
+ 
+### 5. Listar vendedores — média semanal (período entre 32 e 90 dias)
+ 
+Adiciona vendas em semanas diferentes:
+```json
+POST /vendas
+{ "dataVenda": "2026-04-10", "valor": 3000.00, "vendedorId": 1 }
+ 
+POST /vendas
+{ "dataVenda": "2026-04-20", "valor": 1200.00, "vendedorId": 2 }
+```
+ 
+```
+GET /vendedores?inicio=2026-04-01&fim=2026-05-31
+```
+ 
+Cálculo esperado para Carlos:
+- semana de 06/04: 3000 / 1 = **3000.00**
+- semana de 04/05: (1000 + 500 + 800) / 3 = **766.67**
+- média semanal = (3000 + 766.67) / 2 = **1883.34**
+```json
+200 OK
+[
+  {
+    "id": 1,
+    "nome": "Carlos Silva",
+    "totalVendas": 4,
+    "mediaPeriodo": 1883.34,
+    "tipoPeriodo": "SEMANAL"
+  }
+]
+```
+ 
+---
+ 
+### 6. Listar vendedores — média mensal (período > 90 dias)
+ 
+Adiciona vendas em meses diferentes:
+```json
+POST /vendas
+{ "dataVenda": "2026-02-10", "valor": 3000.00, "vendedorId": 1 }
+ 
+POST /vendas
+{ "dataVenda": "2026-03-15", "valor": 1500.00, "vendedorId": 2 }
+```
+ 
+```
+GET /vendedores?inicio=2026-01-01&fim=2026-12-31
+```
+ 
+Cálculo esperado para Carlos:
+- fevereiro: 3000 / 1 = **3000.00**
+- maio: (1000 + 500 + 800) / 3 = **766.67**
+- média mensal = (3000 + 766.67) / 2 = **1883.34**
+```json
+200 OK
+[
+  {
+    "id": 1,
+    "nome": "Carlos Silva",
+    "totalVendas": 4,
+    "mediaPeriodo": 1883.34,
+    "tipoPeriodo": "MENSAL"
+  }
+]
+```
+ 
+---
+ 
+### Listar vendas
+ 
 ```
 GET /vendas
 ```
 ```json
 200 OK
-[{
-  "id": 1,
-  "dataVenda": "2026-01-15",
-  "valor": 1500.00,
-  "vendedorId": 1,
-  "nomeVendedor": "Carlos Silva"
-}]
+[
+  {
+    "id": 1,
+    "dataVenda": "2026-05-01",
+    "valor": 1000.00,
+    "vendedorId": 1,
+    "nomeVendedor": "Carlos Silva"
+  }
+]
 ```
  
 ---
@@ -381,9 +440,9 @@ GET /vendas
 ### Cenários de erro
  
 **Vendedor inexistente**
-```
+```json
 POST /vendas
-{ "dataVenda": "2026-01-15", "valor": 1500.00, "vendedorId": 999 }
+{ "dataVenda": "2026-05-01", "valor": 1500.00, "vendedorId": 999 }
 ```
 ```json
 404 Not Found
@@ -409,7 +468,7 @@ GET /vendedores?inicio=2026-12-01&fim=2026-01-01
 ```
  
 **Campos obrigatórios ausentes**
-```
+```json
 POST /vendas
 { "valor": 1500.00, "vendedorId": 1 }
 ```
