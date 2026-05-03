@@ -9,30 +9,29 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
-class MediaDiariaStrategyTest {
+class MediaMensalStrategyTest {
 
-    private final MediaDiariaStrategy strategy = new MediaDiariaStrategy();
+    private final MediaMensalStrategy strategy = new MediaMensalStrategy();
 
     @Test
-    void deveCalcularMediaDiariaCorretamente() {
+    void deveCalcularMediaMensalCorretamente() {
         LocalDate inicio = LocalDate.of(2026, 1, 1);
-        LocalDate fim = LocalDate.of(2026, 1, 10); // 10 dias
+        LocalDate fim = LocalDate.of(2026, 4, 30); // 4 meses
 
         List<Venda> vendas = List.of(
-                vendaCom(new BigDecimal("500.00")),
-                vendaCom(new BigDecimal("500.00"))
+                vendaCom(new BigDecimal("2000.00")),
+                vendaCom(new BigDecimal("2000.00"))
         );
 
         BigDecimal media = strategy.calcular(vendas, inicio, fim);
 
-        assertThat(media).isEqualByComparingTo(new BigDecimal("100.00"));
+        assertThat(media).isEqualByComparingTo(new BigDecimal("1000.00"));
     }
 
     @Test
-    void deveRetornarTipoDiaria() {
-        assertThat(strategy.getTipo()).isEqualTo(TipoPeriodo.DIARIA);
+    void deveRetornarTipoMensal() {
+        assertThat(strategy.getTipo()).isEqualTo(TipoPeriodo.MENSAL);
     }
 
     private Venda vendaCom(BigDecimal valor) {
@@ -40,4 +39,5 @@ class MediaDiariaStrategyTest {
         venda.setValor(valor);
         return venda;
     }
+
 }
