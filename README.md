@@ -370,10 +370,15 @@ POST /vendas
 GET /vendedores?inicio=2026-04-01&fim=2026-05-31
 ```
  
-Cálculo esperado para Carlos:
-- semana de 06/04: 3000 / 1 = **3000.00**
-- semana de 04/05: (1000 + 500 + 800) / 3 = **766.67**
-- média semanal = (3000 + 766.67) / 2 = **1883.34**
+Cálculo esperado:
+- **Carlos** — 4 vendas
+  - semana de 06/04: 3000 / 1 = **3000.00**
+  - semana de 04/05: (1000 + 500 + 800) / 3 = **766.67**
+  - média semanal = (3000 + 766.67) / 2 = **1883.34**
+- **Ana** — 3 vendas
+  - semana de 20/04: 1200 / 1 = **1200.00**
+  - semana de 04/05: (2000 + 600) / 2 = **1300.00**
+  - média semanal = (1200 + 1300) / 2 = **1250.00**
 ```json
 200 OK
 [
@@ -382,6 +387,13 @@ Cálculo esperado para Carlos:
     "nome": "Carlos Silva",
     "totalVendas": 4,
     "mediaPeriodo": 1883.34,
+    "tipoPeriodo": "SEMANAL"
+  },
+  {
+    "id": 2,
+    "nome": "Ana Souza",
+    "totalVendas": 3,
+    "mediaPeriodo": 1250.00,
     "tipoPeriodo": "SEMANAL"
   }
 ]
@@ -404,18 +416,32 @@ POST /vendas
 GET /vendedores?inicio=2026-01-01&fim=2026-12-31
 ```
  
-Cálculo esperado para Carlos:
-- fevereiro: 3000 / 1 = **3000.00**
-- maio: (1000 + 500 + 800) / 3 = **766.67**
-- média mensal = (3000 + 766.67) / 2 = **1883.34**
+Cálculo esperado:
+- **Carlos** — 5 vendas
+  - fevereiro: 3000 / 1 = **3000.00**
+  - abril: 3000 / 1 = **3000.00**
+  - maio: (1000 + 500 + 800) / 3 = **766.67**
+  - média mensal = (3000 + 3000 + 766.67) / 3 = **2255.56**
+- **Ana** — 4 vendas
+  - março: 1500 / 1 = **1500.00**
+  - abril: 1200 / 1 = **1200.00**
+  - maio: (2000 + 600) / 2 = **1300.00**
+  - média mensal = (1500 + 1200 + 1300) / 3 = **1333.33**
 ```json
 200 OK
 [
   {
     "id": 1,
     "nome": "Carlos Silva",
+    "totalVendas": 5,
+    "mediaPeriodo": 2255.56,
+    "tipoPeriodo": "MENSAL"
+  },
+  {
+    "id": 2,
+    "nome": "Ana Souza",
     "totalVendas": 4,
-    "mediaPeriodo": 1883.34,
+    "mediaPeriodo": 1333.33,
     "tipoPeriodo": "MENSAL"
   }
 ]

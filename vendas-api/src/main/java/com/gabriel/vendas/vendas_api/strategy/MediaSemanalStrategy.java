@@ -7,10 +7,8 @@ import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.time.temporal.WeekFields;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -20,7 +18,7 @@ public class MediaSemanalStrategy implements MediaCalculadoraStrategy{
     @Override
     public BigDecimal calcular(List<Venda> vendas, LocalDate inicio, LocalDate fim) {
 
-        WeekFields weekFields = WeekFields.of(Locale.getDefault());
+        WeekFields weekFields = WeekFields.ISO;
 
         Map<String, List<Venda>> porSemana = vendas.stream()
                 .collect(Collectors.groupingBy(venda -> {
