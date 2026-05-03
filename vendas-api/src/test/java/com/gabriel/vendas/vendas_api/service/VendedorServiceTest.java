@@ -1,5 +1,6 @@
 package com.gabriel.vendas.vendas_api.service;
 
+import com.gabriel.vendas.vendas_api.controller.request.CriarVendedorRequest;
 import com.gabriel.vendas.vendas_api.controller.response.VendedorResponse;
 import com.gabriel.vendas.vendas_api.domain.TipoPeriodo;
 import com.gabriel.vendas.vendas_api.domain.Venda;
@@ -79,4 +80,40 @@ class VendedorServiceTest {
                 .hasMessageContaining("início não pode ser posterior");
     }
 
+    @Test
+    void deveCriarVendedorComSucesso() {
+        CriarVendedorRequest request = new CriarVendedorRequest("Carlos Silva");
+        Vendedor vendedor = Vendedor.builder().id(1L).nome("Carlos Silva").build();
+        VendedorResponse response = new VendedorResponse(1L, "Carlos Silva", 0L, BigDecimal.ZERO, null);
+
+        when(vendedorMapper.toEntity(request)).thenReturn(vendedor);
+        when(vendedorRepository.save(vendedor)).thenReturn(vendedor);
+        when(vendedorMapper.toResponse(vendedor, 0L, BigDecimal.ZERO, null)).thenReturn(response);
+
+        VendedorResponse resultado = vendedorService.criar(request);
+
+        assertThat(resultado.getId()).isEqualTo(1L);
+        assertThat(resultado.getNome()).isEqualTo("Carlos Silva");
+        assertThat(resultado.getTotalVendas()).isEqualTo(0L);
+    }
+
+    @Test
+    void deveRetornarMediaZero_quandoVendedorSemVendasNoPeriodo() {
+        LocalDate inicio = LocalDate.of(2026, 1, 1);
+        LocalDate fim = LocalDate.of(2026, 1, 31);
+
+        Vendedor vendedor = Vendedor.builder().id(1L).nome("Carlos Silva").build();
+        VendedorResponse response = new VendedorResponse(1L, "Carlos Silva", 0L, BigDecimal.ZERO, TipoPeriodo.DIARIA);
+
+        when(strategyFactory.getStrategy(inicio, fim)).thenReturn(strategy);
+        when(strategy.getTipo()).thenReturn(TipoPeriodo.DIARIA);
+        when(vendedorRepository.findAll()).thenReturn(List.of(vendedor));
+        when(vendaRepository.findByVendedorAndDataVendaBetween(vendedor, inicio, fim)).thenReturn(List.of());
+        when(vendedorMapper.toResponse(vendedor, 0L, BigDecimal.ZERO, TipoPeriodo.DIARIA)).thenReturn(response);
+
+        List<VendedorResponse> resultado = vendedorService.listar(inicio, fim);
+
+        assertThat(resultado.get(0).getTotalVendas()).isEqualTo(0L);
+        assertThat(resultado.get(0).getMediaPeriodo()).isEqualByComparingTo(BigDecimal.ZERO);
+    }
 }

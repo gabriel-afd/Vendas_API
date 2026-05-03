@@ -16,9 +16,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -69,4 +70,21 @@ class VendaServiceTest {
                 .hasMessageContaining("999");
     }
 
+    @Test
+    void deveListarVendasComSucesso() {
+        Vendedor vendedor = Vendedor.builder().id(1L).nome("Carlos Silva").build();
+        Venda venda = Venda.builder().id(1L).dataVenda(LocalDate.of(2026, 5, 1))
+                .valor(new BigDecimal("1500.00")).vendedor(vendedor).build();
+        VendaResponse response = new VendaResponse(1L, LocalDate.of(2026, 5, 1),
+                new BigDecimal("1500.00"), 1L, "Carlos Silva");
+
+        when(vendaRepository.findAll()).thenReturn(List.of(venda));
+        when(vendaMapper.toResponse(venda)).thenReturn(response);
+
+        List<VendaResponse> resultado = vendaService.listar();
+
+        assertThat(resultado).hasSize(1);
+        assertThat(resultado.get(0).getId()).isEqualTo(1L);
+        assertThat(resultado.get(0).getNomeVendedor()).isEqualTo("Carlos Silva");
+    }
 }
