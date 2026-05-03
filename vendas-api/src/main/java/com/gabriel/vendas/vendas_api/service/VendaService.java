@@ -12,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class VendaService {
@@ -29,5 +31,12 @@ public class VendaService {
         Venda vendaSalva = vendaRepository.save(vendaMapper.toEntity(request, vendedor));
 
         return vendaMapper.toResponse(vendaSalva);
+    }
+
+    public List<VendaResponse> listar() {
+
+        return vendaRepository.findAll().stream()
+                .map(vendaMapper::toResponse)
+                .toList();
     }
 }

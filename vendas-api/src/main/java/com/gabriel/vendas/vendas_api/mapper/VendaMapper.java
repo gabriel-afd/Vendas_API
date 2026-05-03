@@ -4,7 +4,9 @@ import com.gabriel.vendas.vendas_api.controller.request.CriarVendaRequest;
 import com.gabriel.vendas.vendas_api.controller.response.VendaResponse;
 import com.gabriel.vendas.vendas_api.domain.Venda;
 import com.gabriel.vendas.vendas_api.domain.Vendedor;
+import org.springframework.stereotype.Component;
 
+@Component
 public class VendaMapper {
 
     public Venda toEntity(CriarVendaRequest request, Vendedor vendedor){
